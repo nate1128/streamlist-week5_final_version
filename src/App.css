@@ -1,0 +1,519 @@
+:root {
+  --bg: #0f1226;
+  --surface: #171a32;
+  --surface-2: #1f2243;
+  --text: #e9ecff;
+  --muted: #a9add6;
+  --tagline: #f6f6fa;
+
+  /* Original primary (kept for general UI pieces) */
+  --primary: #5c7cfa;
+  --primary-600: #f6f6fa;
+  --border: #2b2f59;
+  --success: #3ddc97;
+
+  /* >>> Theme accents <<< */
+  --ticket-accent: #ef4056; /* red for CTA */
+  --gold: #f7c948;          /* gold for Recent ticket icon */
+}
+
+/* ------------------------------
+   Global / Base
+---------------------------------*/
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  /* Cinematic ambient glow + subtle vertical wash */
+  background:
+    radial-gradient(800px 500px at 40% 0%, rgba(255,255,255,0.06), transparent 70%),
+    linear-gradient(180deg, #0f1226, #0b0d1f);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Screen-reader-only utility */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* ------------------------------
+   App Layout
+---------------------------------*/
+.app-shell {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ------------------------------
+   Header / Nav
+---------------------------------*/
+.nav {
+  display: block;
+  background: rgba(23, 26, 50, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.05); /* soft divider */
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.nav .brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+.brand-text {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-size: 2.3rem;
+  line-height: 1.1;
+}
+.brand-stream { color: #ff4d4f; font-style: italic; }
+.brand-list   { color: var(--text); }
+.brand-stream + .brand-list { margin-left: 0.05em; }
+.brand-tagline {
+  color: var(--text);
+  font-size: 0.9rem;    /* slightly smaller */
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  margin-top: -0.1rem;
+  opacity: 1;
+}
+.links-row-right { display: flex; justify-content: flex-start; }
+.nav-links { display: flex; gap: 1rem; }
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+.nav-links a:hover {
+  color: var(--text);
+  background: var(--surface);
+  transform: translateY(-1px);
+}
+.nav-links a.active {
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--primary-600);
+}
+
+/* ------------------------------
+   Main Content
+---------------------------------*/
+.main-content {
+  max-width: 960px;
+  margin: 1rem auto;
+  padding: 1rem;
+  width: 100%;
+}
+.page h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  /* Typography polish for titles */
+  letter-spacing: -0.3px;
+  font-weight: 700;
+}
+
+/* Positioning context + ensure enough height for watermark placement */
+.page {
+  position: relative;
+  min-height: 60vh; /* gives room to place watermark near footer */
+}
+
+/* ------------------------------
+   Forms & controls
+   (container is frameless/transparent)
+---------------------------------*/
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr auto; /* input + CTA */
+  gap: 0.5rem;
+  margin: 1rem 0;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Frosted-glass input */
+input[type="text"] {
+  width: 100%;
+  padding: 0.8rem 3.2rem 0.8rem 0.9rem; /* space for gold icon at right */
+  border-radius: 10px;
+
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  color: var(--text);
+  outline: none;
+  box-shadow: none;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+input[type="text"]::placeholder { color: #8d92c7; }
+input[type="text"]:focus {
+  border-color: var(--ticket-accent); /* align focus with CTA */
+  box-shadow: 0 0 6px color-mix(in oklab, var(--ticket-accent) 60%, transparent);
+}
+
+/* Base button (flat) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: none;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    border-color 160ms ease,
+    filter 200ms ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* ------------------------------
+   Ticket-stub CTA (previous rectangular style, still available)
+---------------------------------*/
+.btn.ticket-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* compact footprint */
+  min-width: 112px;
+  padding: 0.48rem 0.9rem;
+
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  color: var(--text);
+
+  /* chip-like edges for a modern feel */
+  border-radius: 4px;
+
+  /* Fill: flat fallback + gentle modern gradient */
+  background: var(--ticket-accent);
+  background: linear-gradient(145deg, var(--ticket-accent), color-mix(in oklab, var(--ticket-accent) 78%, #ffffff 0%));
+  border: 1px solid color-mix(in oklab, var(--ticket-accent) 80%, black 20%);
+
+  /* Neon halo (soft) */
+  box-shadow: none;
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--ticket-accent) 40%, transparent));
+}
+
+/* Corner-bites (modern browsers via masks) */
+.btn.ticket-btn.ticket--corner-bites { --corner-notch: 7px; }
+
+@supports (mask: radial-gradient(circle at 50% 50%, black 50%, transparent 51%)) or
+         (-webkit-mask: radial-gradient(circle at 50% 50%, black 50%, transparent 51%)) {
+  .btn.ticket-btn.ticket--corner-bites {
+    mask:
+      radial-gradient(var(--corner-notch) at 0%   0%,   transparent 98%, black 101%) top left,
+      radial-gradient(var(--corner-notch) at 100% 0%,   transparent 98%, black 101%) top right,
+      radial-gradient(var(--corner-notch) at 0%   100%, transparent 98%, black 101%) bottom left,
+      radial-gradient(var(--corner-notch) at 100% 100%, transparent 98%, black 101%) bottom right,
+      linear-gradient(black, black);
+    mask-composite: exclude, exclude, exclude, exclude, add;
+
+    -webkit-mask:
+      radial-gradient(var(--corner-notch) at 0%   0%,   transparent 98%, black 101%) top left,
+      radial-gradient(var(--corner-notch) at 100% 0%,   transparent 98%, black 101%) top right,
+      radial-gradient(var(--corner-notch) at 0%   100%, transparent 98%, black 101%) bottom left,
+      radial-gradient(var(--corner-notch) at 100% 100%, transparent 98%, black 101%) bottom right,
+      linear-gradient(black, black);
+    -webkit-mask-composite: xor, xor, xor, xor, source-over;
+  }
+}
+
+/* Disable legacy pseudo fallback */
+@supports not (mask: radial-gradient(circle at 50% 50%, black 50%, transparent 51%)) {
+  .btn.ticket-btn.ticket--corner-bites::before,
+  .btn.ticket-btn.ticket--corner-bites::after { content: none; }
+}
+
+/* Micro-interactions: gentle lift + press */
+.btn.ticket-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: drop-shadow(0 0 10px color-mix(in oklab, var(--ticket-accent) 50%, transparent));
+}
+.btn.ticket-btn:active {
+  transform: scale(0.97);
+}
+
+/* Accessible focus without harsh glow */
+.btn.ticket-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--ticket-accent) 80%, white 20%);
+  outline-offset: 3px;
+}
+
+/* ------------------------------
+   Recent inputs dropdown
+   (icon toggle + menu INSIDE halo, without layout shift)
+---------------------------------*/
+.input-with-recent {
+  position: relative;     /* context for absolute menu */
+  display: grid;
+  grid-template-columns: 1fr auto; /* input + gold icon toggle */
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;           /* prevent grid squeezing siblings */
+}
+
+/* When open, render the frosted halo look without changing layout */
+.input-with-recent.is-open {
+  border: 0;              /* no border: avoids layout growth */
+  padding: 0;             /* no padding: same reason */
+
+  outline: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  /* subtle inner presence (purely visual) */
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,0.00);
+}
+
+/* Keep input spacing consistent whether open or closed */
+.input-with-recent > input[type="text"] {
+  padding-right: 3.2rem; /* room for gold ticket icon */
+}
+
+/* Icon-only toggle inside the input (right side) */
+.recent-toggle.icon-only {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  border-radius: 8px; /* subtle hover feel */
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+.recent-toggle.icon-only:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-1px);
+}
+.recent-toggle.icon-only:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--gold) 85%, white 15%);
+  outline-offset: 2px;
+}
+
+/* Gold ticket icon */
+.recent-ticket-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+  pointer-events: none;
+
+  /* If your SVG paths are black, tint them gold via filter: */
+  filter: invert(84%) sepia(49%) saturate(1161%) hue-rotate(340deg) brightness(102%) contrast(95%);
+  /* If your SVG is authored with fill="currentColor", prefer:
+     filter: none; color: var(--gold); */
+}
+
+/* The dropdown menu drawn INSIDE the halo, overlayed so no layout shift */
+.recent-menu.inside {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: calc(100% + 6px + 2lh);  /* below the input; change to 6px to overlap if desired */
+  z-index: 15;
+
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(12,14,30,0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+  padding: 0.35rem 0.35rem 0.25rem;
+}
+
+.recent-menu.inside ul {
+  list-style: none;
+  margin: 0; padding: 0;
+  max-height: 220px;
+  overflow: auto;
+}
+.recent-menu.inside ul::-webkit-scrollbar { width: 10px; }
+.recent-menu.inside ul::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+}
+
+.recent-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.5rem 0.55rem;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.recent-item:hover { background: rgba(255,255,255,0.06); }
+
+.recent-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recent-time {
+  color: var(--muted);
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.recent-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+.recent-clear {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+}
+.recent-clear:hover { color: var(--text); text-decoration: underline; }
+
+/* Keep the red ticket CTA from growing/shifting when menu opens */
+.input-row:has(.input-with-recent.is-open) .btn.ticket-icon-cta {
+  transform: none !important;
+  transition: none !important;
+}
+.btn.ticket-icon-cta { flex: 0 0 auto; white-space: nowrap; }
+
+/* ------------------------------
+   Red ticket icon CTA (replaces big red rectangle)
+---------------------------------*/
+.btn.ticket-icon-cta {
+  /* icon + label chip with neutral container */
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.48rem 0.8rem;  /* roughly same height as previous CTA */
+  min-height: 42px;         /* lock-in height */
+  align-items: center;
+}
+.btn.ticket-icon-cta:hover { background: rgba(255,255,255,0.06); }
+
+/* The red ticket SVG itself */
+.ticket-icon-red {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+
+  /* If your SVG is black, tint red via filter: */
+  filter: invert(42%) sepia(72%) saturate(3810%) hue-rotate(338deg) brightness(98%) contrast(100%);
+  /* If your SVG uses currentColor:
+     filter: none; color: var(--ticket-accent); */
+}
+.ticket-icon-cta .ticket-label { display: inline-block; }
+
+/* ------------------------------
+   Activity log (removed per request)
+---------------------------------*/
+.activity-log { display: none; }
+
+/* ------------------------------
+   Empty hint (unchanged)
+---------------------------------*/
+.empty-hint {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: color-mix(in oklab, var(--text) 70%, #ffffff 0%);
+  opacity: 0.9;
+}
+
+/* ------------------------------
+   Prototype watermark (centered in .page, near bottom)
+---------------------------------*/
+.prototype-watermark {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 30px;           /* near footer; adjust as desired */
+
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
+
+  font-size: 27px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--muted);
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ------------------------------
+   Responsive niceties
+---------------------------------*/
+@media (max-width: 720px) {
+  .input-row {
+    grid-template-columns: 1fr;      /* stack input and button */
+  }
+  .input-with-recent {
+    grid-template-columns: 1fr auto; /* input + recent toggle remains */
+  }
+  .btn.ticket-icon-cta {
+    width: 100%;
+    max-width: 240px;
+    margin-inline: auto;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn, .btn.ticket-icon-cta { transition: none; }
+  .btn.ticket-icon-cta:hover, .btn:hover { transform: none; }
+}
