@@ -1,0 +1,681 @@
+/* src/cart/cart.css */
+/* Namespaced cart styles to avoid collisions with StreamList styles */
+
+/* ---- Cart local theme (fallbacks if app-level tokens are missing) ---- */
+:root {
+  --cart-bg: #0b132b;
+  --cart-panel: #1c2541;
+  --cart-muted: #a7b3d0;
+  --cart-primary: #5bc0be;
+  --cart-secondary: #3a506b;
+  --cart-warning: #ffd166;
+  --cart-text: #e0e6f3;
+}
+
+/* ------------------------------
+   Sections / Cards (legacy cards still supported)
+---------------------------------*/
+.cart-section h2 { margin: 6px 0 12px; }
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.cart-card {
+  background: var(--surface-2, var(--cart-panel));
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border, rgba(255,255,255,0.07));
+  color: var(--text, var(--cart-text));
+}
+
+.cart-muted { color: var(--cart-muted); font-size: 14px; }
+.cart-price-tag { font-weight: 700; }
+
+/* Title row in cards (with product icon) */
+.cart-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  flex-wrap: wrap;
+  line-height: 1.25;
+}
+
+/* Product icons (Material Icons) used in lists & rows) */
+.product-icon {
+  font-size: 24px;
+  line-height: 1;
+  color: var(--muted, var(--cart-muted));
+  vertical-align: middle;
+}
+.product-icon.small {
+  font-size: 20px;
+  margin-right: 6px;
+  color: var(--muted, var(--cart-muted));
+}
+
+/* Subtle brighten on hover */
+.cart-card:hover .product-icon {
+  color: var(--primary, var(--cart-primary));
+}
+
+/* ------------------------------
+   Buttons (generic cart variants)
+---------------------------------*/
+.cart-btn-primary,
+.cart-btn-secondary,
+.cart-btn-ghost {
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.cart-btn-primary {
+  background: var(--cart-primary);
+  color: #08213a;
+}
+.cart-btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+.cart-btn-secondary {
+  background: #c1e3e2;
+  color: #08213a;
+}
+
+.cart-btn-ghost {
+  background: none;
+  color: var(--text, var(--cart-text));
+}
+
+.cart-link {
+  background: none;
+  border: none;
+  color: var(--text, var(--cart-text));
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.cart-link.small { font-size: 12px; opacity: .8; text-decoration: underline; }
+
+/* ------------------------------
+   Warning banner
+---------------------------------*/
+.cart-warning {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--cart-warning);
+  color: #2a2000;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* ------------------------------
+   Modal
+---------------------------------*/
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 9999;
+}
+
+.cart-modal {
+  width: min(800px, 100%);
+  background: #0e1a35;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text, var(--cart-text));
+}
+
+.cart-header {
+  padding: 12px 14px;
+  background: #112244;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ------------------------------
+   Table (Cart page & modal)
+---------------------------------*/
+.cart-table { padding: 10px 14px; }
+
+/* Rows follow: Item | Qty | Price | Line Total */
+.cart-row {
+  display: grid;
+  grid-template-columns: 1.5fr .8fr .6fr .7fr; /* Item | Qty | Price | Total */
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.cart-head { font-weight: 700; border-bottom-color: rgba(255,255,255,0.2); }
+
+/* Support both ".cart-cell" and the newer ".cell" classnames */
+.cart-cell.cart-name .cart-title,
+.cart-row .cell.name .title { font-weight: 600; margin-bottom: 4px; }
+
+.cart-chip,
+.cart-row .chip {
+  background: #fca311;
+  color: #2a1b00;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.cart-empty { padding: 20px 0; text-align: center; color: var(--cart-muted); }
+
+/* Right-align numeric columns */
+.cart-cell.cart-price,
+.cart-cell.cart-line,
+.cart-row .cell.price,
+.cart-row .cell.total { text-align: right; }
+
+/* ------------------------------
+   Quantity controls (legacy)
+---------------------------------*/
+.cart-qty-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cart-qty-controls button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: var(--cart-secondary);
+  color: var(--text, var(--cart-text));
+  cursor: pointer;
+}
+.cart-qty-controls input {
+  width: 48px;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #344;
+  background: #0f1f3f;
+  color: var(--text, var(--cart-text));
+  text-align: center;
+}
+
+/* ------------------------------
+   (Optional) Nav badge button
+---------------------------------*/
+.cart-badge-btn {
+  position: relative;
+  background: var(--cart-secondary);
+  border: none;
+  color: var(--text, var(--cart-text));
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.cart-badge {
+  background: var(--cart-primary);
+  color: #08213a;
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+/* ------------------------------
+   Shop top bar + "View Cart" (match NavBar look)
+---------------------------------*/
+.shop-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.shop-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text, var(--cart-text));
+}
+
+/* Base "nav-like" button — mirrors .nav-links a from App.css */
+.navlike-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: var(--muted, var(--cart-text));
+  text-decoration: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(255,255,255,0.12));
+  background: var(--surface-2, var(--cart-panel));
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+.navlike-btn:hover {
+  color: var(--text, var(--cart-text));
+  background: var(--surface, #112244);
+  transform: translateY(-1px);
+}
+.navlike-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary, var(--cart-primary)) 50%, transparent);
+}
+.navlike-btn.active {
+  color: var(--text, var(--cart-text));
+  background: var(--surface-2, var(--cart-panel));
+  border: 1px solid var(--primary-600, rgba(255,255,255,0.28));
+}
+.navlike-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Red shopping cart icon for the "View Cart" button */
+.shop-cart-icon {
+  color: var(--ticket-accent, #d62828);
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Incrementor: text-only (bright green), no outline or background */
+.shop-cart-count {
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 400;
+  color: #00ff4c;
+  background: none;
+  border: none;
+}
+
+/* ------------------------------
+   Qty controls + Remove (nav-like variants for table rows)
+---------------------------------*/
+.navlike-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.navlike-qty-btn {
+  font-weight: 800;
+  line-height: 1;
+  min-width: 42px;
+  height: 32px;
+  padding: 0;
+}
+.navlike-qty-input {
+  width: 42px;
+  height: 32px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--text, #e8ecff);
+  background: var(--surface-2, #182045);
+  border: 1px solid var(--border, rgba(255,255,255,0.12));
+  border-radius: 8px;
+  outline: none;
+  transition: background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+}
+.navlike-qty-input:hover { background: var(--surface, #121632); }
+.navlike-qty-input:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary, #7aa2ff) 50%, transparent);
+}
+.cart-remove-btn { margin-top: 6px; }
+
+@media (max-width: 600px) {
+  .navlike-qty-btn,
+  .navlike-qty-input {
+    min-width: 38px;
+    width: 38px;
+    height: 30px;
+  }
+}
+
+/* ------------------------------
+   FOOTER (aligned to table columns)
+   - Items: under Qty
+   - Total: under Line Total
+   - Actions: nav-like buttons (right)
+---------------------------------*/
+.cart-footer {
+  /* blended footer (no panel/outline/halo) */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 12px 0;
+  margin-top: 8px;
+  box-shadow: none;
+}
+
+/* Grid columns = Item | Qty | Price | Line Total (mirror .cart-row) */
+.cart-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr .8fr .6fr .7fr;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+}
+
+/* KV pairs inside footer cells */
+.cart-footer-kv {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--muted, #a0a8d9);
+}
+.cart-footer-kv .kv-label { opacity: 0.9; }
+.cart-footer-kv .kv-value { color: var(--text, #e8ecff); font-weight: 800; }
+
+/* Make total stronger and right-aligned in the last column */
+.cart-footer-kv.total { justify-content: flex-end; }
+.cart-footer-grid .cell-total { text-align: right; }
+
+/* Footer actions on second line, right-aligned; add space to avoid crowding */
+.cart-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;          /* comfortable spacing between buttons */
+  margin-top: 10px;
+  flex-wrap: wrap;    /* avoid overlap on narrow screens */
+}
+
+/* Small, consistent gap between icon and label inside each button */
+.navlike-btn .btn-icon {
+  font-size: 18px;
+  line-height: 1;
+  margin-right: 6px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Icon color accents for footer actions */
+.navlike-btn .btn-icon.success { color: #00e676; } /* green for Checkout */
+.navlike-btn .btn-icon.danger  { color: #ff5252; } /* red for Clear Cart */
+
+.navlike-btn.danger:hover {
+  background: color-mix(in oklab, #ff5252 14%, var(--surface, #121632));
+  border-color: color-mix(in oklab, #ff5252 30%, var(--border, rgba(255,255,255,0.12)));
+  color: var(--text, #e8ecff);
+}
+.navlike-primary {
+  background: color-mix(in oklab, var(--primary, #7aa2ff) 20%, var(--surface-2, #182045));
+  border-color: color-mix(in oklab, var(--primary, #7aa2ff) 35%, var(--border, rgba(255,255,255,0.12)));
+  color: var(--text, #e8ecff);
+}
+.navlike-primary:hover {
+  background: color-mix(in oklab, var(--primary, #7aa2ff) 30%, var(--surface, #121632));
+}
+
+/* ------------------------------
+   STACKED ROW BUTTONS FOR SHOP
+   (icon | text | price | CTA) with strict alignment & icon inside
+---------------------------------*/
+.cart-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* Full‑width row "button" used by Accessories & Subscriptions */
+.stack-row-btn {
+  position: relative;
+  width: 100%;
+
+  /* Grid: icon | text | price | CTA */
+  display: grid;
+  grid-template-columns: 40px 1fr 0.65fr 0.55fr;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 14px;
+  padding-left: 16px; /* ensures icon feels inside the rounded rect */
+
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255,255,255,0.12));
+  background: var(--surface-2, #182045);
+  color: var(--muted, var(--cart-text));
+  cursor: pointer;
+
+  overflow: hidden; /* clip any stray offset so icon cannot "float" outside */
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+  text-align: left;
+}
+
+.stack-row-btn:hover:not([disabled]) {
+  color: var(--text, #e8ecff);
+  background: var(--surface, #121632);
+  transform: translateY(-1px);
+}
+.stack-row-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary, #7aa2ff) 50%, transparent);
+}
+.stack-row-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* Reset any inherited margins/offsets that could push content */
+.stack-row-btn .stack-col,
+.stack-row-btn .stack-col > * { margin: 0 !important; }
+
+/* Column 1: icon — center it in the first track */
+.stack-row-btn .stack-col.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: auto !important;
+  right: auto !important;
+  /* do not set color here; pills will control glyph color */
+}
+
+/* Make sure the Material Icon itself has no offset and lets pill control the color */
+.stack-row-btn .stack-col.icon .material-icons {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  line-height: 1;
+  color: inherit; /* allow pill variants to color the glyph */
+  margin: 0;
+  transform: none;
+  position: static;
+}
+
+/* Column 2: text (title + description) */
+.stack-row-btn .stack-col.text {
+  min-width: 0;                 /* allow wrapping without growing grid */
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 2px;
+}
+.stack-row-btn .stack-title {
+  display: block;
+  font-weight: 800;
+  color: var(--text, #e8ecff);
+  line-height: 1.25;
+}
+.stack-row-btn .stack-desc {
+  display: block;
+  color: var(--muted, #a0a8d9);
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+/* Column 3: price — always right-aligned */
+.stack-row-btn .stack-col.price {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 800;
+  color: var(--text, #e8ecff);
+}
+
+/* Column 4: CTA — pinned to the far right; no crowding */
+.stack-row-btn .stack-col.cta {
+  justify-self: end;            /* far-right alignment */
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface, #121632);
+  border: 1px solid var(--border, rgba(255,255,255,0.12));
+  color: var(--text, #e8ecff);
+  font-weight: 700;
+}
+
+/* ------------------------------
+   Material Icons baseline reset (safe for the rest of the app)
+---------------------------------*/
+.material-icons {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: inherit;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  transform: none;
+}
+
+/* ------------------------------
+   Responsive niceties
+---------------------------------*/
+@media (max-width: 720px) {
+  /* Cart table columns */
+  .cart-row {
+    grid-template-columns: 1.2fr .9fr .6fr .7fr; /* give Qty a bit more room on mobile */
+  }
+  .cart-footer-grid {
+    grid-template-columns: 1.2fr .9fr .6fr .7fr; /* mirror the row widths on mobile */
+  }
+
+  /* Stacked Shop rows: compress columns and keep CTA readable */
+  .stack-row-btn {
+    grid-template-columns: 36px 1fr auto;  /* icon | text | right cluster */
+  }
+  .stack-row-btn .stack-col.price {
+    justify-self: end;
+    margin-right: 8px;
+  }
+  .stack-row-btn .stack-col.cta {
+    grid-column: 2 / 4;        /* CTA runs beneath text/right on very narrow widths */
+    margin-top: 6px;
+    justify-self: start;
+  }
+}
+
+/* (Optional) Apply the blended footer look inside the modal too) */
+.cart-modal .cart-footer {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.cart-modal .cart-footer-grid {
+  background: transparent;
+  border: none;
+}
+
+/* === Circular icon pills (bigger icons, colored per type) === */
+
+/* Base pill */
+.icon-pill,
+.product-icon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border, rgba(255,255,255,0.14));
+  background: rgba(255,255,255,0.05);
+
+  overflow: hidden;
+  flex: 0 0 36px;
+
+  /* default fg; overridden by variant modifiers below */
+  --pill-fg: var(--text, #e8ecff);
+}
+
+/* Glyph inside pill uses local variable color */
+.icon-pill .material-icons,
+.product-icon-pill .material-icons {
+  font-family: 'Material Icons';
+  font-size: 22px;
+  line-height: 1;
+  color: var(--pill-fg);
+}
+
+/* Variant themes (icon-pill naming) */
+.icon-pill--subscription {
+  background: rgba(255, 209, 102, 0.18);
+  border-color: color-mix(in oklab, #ffd166 45%, black 55%);
+  --pill-fg: #ffd166;
+}
+.icon-pill--accessory {
+  background: rgba(91, 192, 190, 0.20);
+  border-color: color-mix(in oklab, #5bc0be 45%, black 55%);
+  --pill-fg: #5bc0be;
+}
+
+/* Variant themes (product-icon-pill naming) */
+.product-icon-pill--subscription {
+  background: rgba(255, 209, 102, 0.18);
+  border-color: color-mix(in oklab, #ffd166 45%, black 55%);
+  --pill-fg: #ffd166;
+}
+.product-icon-pill--accessory {
+  background: rgba(91, 192, 190, 0.20);
+  border-color: color-mix(in oklab, #5bc0be 45%, black 55%);
+  --pill-fg: #5bc0be;
+}
+
+/* Slightly wider icon column for pill breathing room */
+.stack-row-btn {
+  grid-template-columns: 44px 1fr 0.65fr 0.55fr;
+}
+
+/* Backstop: inside stacked rows, force glyph to read the pill color even if an extra wrapper exists */
+.stack-row-btn .icon-pill .material-icons,
+.stack-row-btn .product-icon-pill .material-icons {
+  color: var(--pill-fg);
+}
+
+/* If you also want bigger icons in cart rows (table) */
+.cart-row .product-icon-pill {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  border: 1px solid var(--border, rgba(255,255,255,0.14));
+  background: rgba(255,255,255,0.05);
+}
+.cart-row .product-icon-pill .material-icons {
+  font-size: 20px;
+  line-height: 1;
+}
