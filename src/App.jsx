@@ -19,13 +19,9 @@ function App() {
             <Route path="/movies" element={<Movies />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/about" element={<About />} />
-
-            {/* Shop mounted on both paths */}
             <Route path="/shop" element={<Shop />} />
             <Route path="/store" element={<Shop />} />
-
-            {/* Catch-all: redirect unknown routes to /shop */}
-            <Route path="*" element={<Navigate to="/shop" replace />} />
+            <Route path="*" element={<Navigate to="/movies" replace />} />
           </Routes>
         </main>
         <footer className="footer">

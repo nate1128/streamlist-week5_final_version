@@ -1,15 +1,14 @@
 // src/pages/StreamList.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Ticket from "../icons/ticket.svg";
-// (Optional) enable when you add /watch route
-// import { useNavigate } from "react-router-dom";
 
 // Keys for localStorage
 const RECENT_KEY = "streamlist_recent_inputs_v1";
 const MAX_RECENT = 8;
 
 export default function StreamList() {
-  // const navigate = useNavigate(); // for a future /watch page
+  const navigate = useNavigate(); // used for handoff to /movies
 
   // --- Recent (gold ticket menu data) ---
   const [recent, setRecent] = useState(() => {
@@ -30,7 +29,7 @@ export default function StreamList() {
 
   // Selection / edit state inside the menu
   const [selectedKey, setSelectedKey] = useState(null); // r.tsISO
-  const [editingKey, setEditingKey] = useState(null); // r.tsISO
+  const [editingKey, setEditingKey] = useState(null);  // r.tsISO
   const [draft, setDraft] = useState("");
 
   // Refs: menuRef points to the menu box itself; toggleRef to the gold ticket button
@@ -109,12 +108,12 @@ export default function StreamList() {
       ].slice(0, MAX_RECENT);
     });
 
-    setTitle(""); // clear input
-    setOpenMenu(false); // keep menu closed after submit
+    setTitle("");         // clear input
+    setOpenMenu(false);   // keep menu closed after submit
     inputRef.current?.focus();
 
-    // (Future) Navigate to a Watch page
-    // navigate(`/watch?title=${encodeURIComponent(trimmed)}`);
+    // NOTE: We are NOT auto-navigating here to avoid changing your submit behavior.
+    // The handoff happens via the Play action in the Recents list (see onPlay below).
   };
 
   // Menu behaviors
@@ -145,8 +144,9 @@ export default function StreamList() {
   // Actions within a selected row
   const onPlay = (r) => {
     console.log("[Recent] play", { title: r.text, tsISO: r.tsISO });
-    // (Future) Replace with navigation
-    // navigate(`/watch?title=${encodeURIComponent(r.text)}`);
+    // ✅ Navigate to Movies and pass the title as a query parameter
+    const params = new URLSearchParams({ q: r.text });
+    navigate(`/movies?${params.toString()}`);
   };
 
   const onDelete = (key) => {
@@ -237,6 +237,7 @@ export default function StreamList() {
               className="recent-toggle icon-only"
               aria-haspopup="listbox"
               aria-expanded={openMenu}
+              aria-controls="recent-menu"
               onClick={toggleMenu}
               title="Show recent entries"
               aria-label="Show recent entries"
@@ -252,7 +253,13 @@ export default function StreamList() {
           )}
 
           {openMenu && recent.length > 0 && (
-            <div className="recent-menu inside" ref={menuRef}>
+            <div
+              id="recent-menu"
+              className="recent-menu inside"
+              ref={menuRef}
+              role="region"
+              aria-label="Recent entries"
+            >
               <div className="recent-menu-header" aria-hidden="true">
                 Recents
               </div>
