@@ -41,7 +41,7 @@ export default function StreamList() {
   useEffect(() => {
     try {
       localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
-    } catch {}
+    } catch { }
   }, [recent]);
 
   const closeMenu = () => {
@@ -123,7 +123,7 @@ export default function StreamList() {
     setRecent([]);
     try {
       localStorage.removeItem(RECENT_KEY);
-    } catch {}
+    } catch { }
   };
 
   // Row selection (click a title -> show action icons)
@@ -274,9 +274,8 @@ export default function StreamList() {
                     <li key={key}>
                       {!editing ? (
                         <div
-                          className={`recent-row ${
-                            selected ? "is-selected" : ""
-                          } ${r.completed ? "is-completed" : ""}`}
+                          className={`recent-row ${selected ? "is-selected" : ""
+                            } ${r.completed ? "is-completed" : ""}`}
                         >
                           <button
                             type="button"
