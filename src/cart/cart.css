@@ -679,3 +679,104 @@
   font-size: 20px;
   line-height: 1;
 }
+/* Checkout page layout */
+.checkout-page .checkout-form {
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.checkout-page .checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkout-page .checkout-label {
+  font-weight: 700;
+}
+
+.checkout-page .checkout-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* CVC + Expiration on same row */
+.checkout-page .checkout-row-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Two buttons, each 50% width of form */
+.checkout-page .checkout-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.checkout-page .checkout-actions .navlike-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Allow form to expand on narrow screens */
+@media (max-width: 560px) {
+  .checkout-page .checkout-form {
+    max-width: 100%;
+  }
+}
+.checkout-page .icon-yellow {
+  color: #f5c518;
+}
+
+.checkout-page .icon-green {
+  color: #28c76f;
+}
+/* Login page styling */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 32px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.login-title {
+  margin: 0 0 10px 0;
+  font-weight: 360;   /* normal weight */
+}
+
+.login-subtitle {
+  margin: 0 0 20px 0;
+  opacity: 0.85;
+}
+
+.login-google-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.login-footnote {
+  margin-top: 18px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+.login-logo {
+  width: 360px;
+  height: auto;
+  margin-bottom: 24px;
+}

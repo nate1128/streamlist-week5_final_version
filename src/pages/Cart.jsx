@@ -9,6 +9,10 @@ export default function Cart() {
   const { state, dispatch } = useCart();
   const navigate = useNavigate();
 
+  const handleCheckout = () => {
+    navigate("/checkout");
+  };
+
   return (
     <section className="cart-page" style={{ padding: 16 }}>
       <h1>Your Cart</h1>
@@ -47,9 +51,7 @@ export default function Cart() {
           <div className="cell cell-total">
             <div className="cart-footer-kv total">
               <span className="kv-label">Total:</span>
-              <span className="kv-value">
-                ${state.totalPrice.toFixed(2)}
-              </span>
+              <span className="kv-value">${state.totalPrice.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -77,16 +79,13 @@ export default function Cart() {
 
           <button
             className="navlike-btn navlike-primary"
+            onClick={handleCheckout}
             disabled={state.items.length === 0}
             title={
-              state.items.length === 0
-                ? "Add items first"
-                : "Proceed to checkout"
+              state.items.length === 0 ? "Add items first" : "Proceed to checkout"
             }
           >
-            <span className="material-icons btn-icon success">
-              attach_money
-            </span>
+            <span className="material-icons btn-icon success">attach_money</span>
             <span>Checkout</span>
           </button>
         </div>
