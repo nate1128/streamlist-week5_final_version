@@ -1256,3 +1256,58 @@ button:active,
     inset 0 -8px 14px rgba(0,0,0,0.45),
     0 6px 12px rgba(0,0,0,0.22);
 }
+.nav-links a:hover {
+  text-shadow: 0 0 8px var(--glow-color),
+               0 0 16px var(--glow-color);
+  transition: text-shadow 0.25s ease;
+}
+/* ensure nav links lay out correctly and can shrink without overflowing */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0; /* allows flex children to shrink */
+}
+
+/* keep each nav item on one line */
+.nav-links > * {
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* hover glow for nav links and buttons (uses theme variable --glow-color) */
+.nav-links a:hover,
+.nav-links .btn-logout:hover,
+.nav-links .btn-login:hover {
+  text-shadow: 0 0 8px var(--glow-color), 0 0 16px var(--glow-color);
+  transition: text-shadow 0.22s ease;
+}
+
+/* ensure nav sits above stage lights if overlapping */
+.nav-links { z-index: 3; }
+
+/* small-screen tweak */
+@media (max-width: 520px) {
+  .nav-links .btn-logout,
+  .nav-links .btn-login {
+    padding: 6px 8px;
+  }
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.nav-links > * {
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.nav-links a:hover,
+.nav-links .btn-logout:hover,
+.nav-links .btn-login:hover {
+  text-shadow: 0 0 8px var(--glow-color), 0 0 16px var(--glow-color);
+  transition: text-shadow 0.22s ease;
+}
