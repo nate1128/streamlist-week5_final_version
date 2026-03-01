@@ -10,6 +10,9 @@ import './cart/cart.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './auth/AuthContext';
 
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
@@ -23,5 +26,7 @@ root.render(
     </GoogleOAuthProvider>
   </React.StrictMode>
 );
+
+serviceWorkerRegistration.register();
 
 reportWebVitals();
