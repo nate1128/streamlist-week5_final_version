@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import logo from "../assets/StreamList1.png"; // reuse existing logo
 import "../cart/cart.css";
@@ -24,7 +24,12 @@ function parseJwt(token) {
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthed } = useAuth();
+
+  // Read the 'from' query param added by ProtectedRoute so we can show proof
+  const params = new URLSearchParams(location.search);
+  const from = params.get("from");
 
   React.useEffect(() => {
     if (isAuthed) navigate("/", { replace: true });
@@ -46,6 +51,21 @@ export default function Login() {
           Sign in with Google to access the application.
         </p>
 
+        {/* ---- TEMPORARY DEBUG BANNER (remove after screenshots) ---- */}
+        {from && (
+          <div
+            style={{
+              fontSize: "12px",
+              color: "gray",
+              marginBottom: "10px",
+              textAlign: "center",
+            }}
+          >
+            Redirected from: <strong>{from}</strong>
+          </div>
+        )}
+        {/* --------------------------------------------------------- */}
+
         <div className="login-google-wrap">
           <GoogleLogin
             theme="filled_black"
@@ -60,13 +80,16 @@ export default function Login() {
                 return;
               }
 
+              // Persist auth in context
               login({
                 name: payload.name,
                 email: payload.email,
                 picture: payload.picture,
               });
 
-              navigate("/", { replace: true });
+              // Redirect back to requested route if present, otherwise home
+              const redirectTo = from || "/";
+              navigate(redirectTo, { replace: true });
             }}
             onError={() => {
               alert("Google Sign In failed. Please try again.");

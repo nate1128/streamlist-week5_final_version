@@ -29,6 +29,11 @@ export default function Checkout() {
   const [exp, setExp] = React.useState("");
   const [zip, setZip] = React.useState("");
 
+  // Inline error state for fields
+  const [cardError, setCardError] = React.useState("");
+  const [cvcError, setCvcError] = React.useState("");
+  const [saveSuccess, setSaveSuccess] = React.useState("");
+
   const [savedCards, setSavedCards] = React.useState(() => {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -37,23 +42,36 @@ export default function Checkout() {
     }
   });
 
+  React.useEffect(() => {
+    if (saveSuccess) {
+      const t = setTimeout(() => setSaveSuccess(""), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [saveSuccess]);
+
   const saveCard = (e) => {
     e.preventDefault();
 
+    // Validate card number
     if (!isValidCardNumber(cardNumber)) {
-      alert("Card number must match 1234 5678 9012 3456.");
+      setCardError("Invalid card number. Format must be XXXX XXXX XXXX XXXX.");
       return;
+    } else {
+      setCardError("");
     }
 
+    // Validate CVC
     if (!isValidCvc(cvc)) {
-      alert("CVC must be exactly 3 digits.");
+      setCvcError("CVC must be exactly 3 digits.");
       return;
+    } else {
+      setCvcError("");
     }
 
     const last4 = cardNumber.replace(/\s/g, "").slice(-4);
 
     const newCard = {
-      id: crypto.randomUUID(),
+      id: (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}`,
       nameOnCard: nameOnCard.trim(),
       cardNumberFormatted: cardNumber,
       last4,
@@ -65,41 +83,52 @@ export default function Checkout() {
 
     const next = [newCard, ...savedCards];
     setSavedCards(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setSaveSuccess("Card saved to localStorage.");
+    } catch (e) {
+      setSaveSuccess("Saved locally (UI only).");
+      // console.warn("LocalStorage write failed", e);
+    }
 
+    // Clear inputs
     setNameOnCard("");
     setCardNumber("");
     setCvc("");
     setExp("");
     setZip("");
-
-    alert("Card saved to localStorage.");
   };
 
   const removeCard = (id) => {
     const next = savedCards.filter((c) => c.id !== id);
     setSavedCards(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch (e) {
+      // console.warn("LocalStorage remove failed", e);
+    }
   };
 
   const completePurchase = () => {
-    alert("Complete Purchase (demo).");
+    // Minimal demo behavior for presentation
+    setSaveSuccess("Purchase completed (demo).");
+    setTimeout(() => setSaveSuccess(""), 2500);
   };
 
   return (
     <section className="cart-page checkout-page" style={{ padding: 16 }}>
       <h1>Checkout</h1>
-      <p className="cart-muted">
-        Enter your card information and save it to localStorage.
-      </p>
+      <p className="cart-muted">Enter your card information and save it to localStorage.</p>
 
-      <form onSubmit={saveCard} className="checkout-form">
+      <form onSubmit={saveCard} className="checkout-form" noValidate>
         <label className="checkout-field">
           <span className="checkout-label">Name on card</span>
           <input
             className="navlike-qty-input checkout-input"
             value={nameOnCard}
-            onChange={(e) => setNameOnCard(e.target.value)}
+            onChange={(e) => {
+              setNameOnCard(e.target.value);
+            }}
             required
             autoComplete="cc-name"
           />
@@ -108,28 +137,50 @@ export default function Checkout() {
         <label className="checkout-field">
           <span className="checkout-label">Card number</span>
           <input
-            className="navlike-qty-input checkout-input"
+            className={`navlike-qty-input checkout-input ${cardError ? "input-error" : ""}`}
             value={cardNumber}
-            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+            onChange={(e) => {
+              const formatted = formatCardNumber(e.target.value);
+              setCardNumber(formatted);
+              if (cardError) setCardError("");
+            }}
             placeholder="1234 5678 9012 3456"
             inputMode="numeric"
             required
             autoComplete="cc-number"
+            aria-invalid={!!cardError}
+            aria-describedby={cardError ? "card-error" : undefined}
           />
+          {cardError && (
+            <div id="card-error" className="error-message" role="alert">
+              {cardError}
+            </div>
+          )}
         </label>
 
         <div className="checkout-row-half">
           <label className="checkout-field">
             <span className="checkout-label">CVC</span>
             <input
-              className="navlike-qty-input checkout-input"
+              className={`navlike-qty-input checkout-input ${cvcError ? "input-error" : ""}`}
               value={cvc}
-              onChange={(e) => setCvc(formatCvc(e.target.value))}
+              onChange={(e) => {
+                const v = formatCvc(e.target.value);
+                setCvc(v);
+                if (cvcError) setCvcError("");
+              }}
               placeholder="123"
               inputMode="numeric"
               required
               autoComplete="cc-csc"
+              aria-invalid={!!cvcError}
+              aria-describedby={cvcError ? "cvc-error" : undefined}
             />
+            {cvcError && (
+              <div id="cvc-error" className="error-message" role="alert">
+                {cvcError}
+              </div>
+            )}
           </label>
 
           <label className="checkout-field">
@@ -158,24 +209,20 @@ export default function Checkout() {
           />
         </label>
 
-        <div className="checkout-actions">
+        <div className="checkout-actions" style={{ marginTop: 12 }}>
           <button type="submit" className="navlike-btn navlike-primary">
-            <span className="material-icons btn-icon icon-yellow">
-              credit_card
-            </span>
+            <span className="material-icons btn-icon icon-yellow">credit_card</span>
             <span>Save Card</span>
           </button>
 
-          <button
-            type="button"
-            className="navlike-btn"
-            onClick={completePurchase}
-          >
-            <span className="material-icons btn-icon icon-green">
-              shopping_cart_checkout
-            </span>
+          <button type="button" className="navlike-btn" onClick={completePurchase} style={{ marginLeft: 8 }}>
+            <span className="material-icons btn-icon icon-green">shopping_cart_checkout</span>
             <span>Complete Purchase</span>
           </button>
+
+          {saveSuccess && (
+            <span style={{ marginLeft: 12, color: "#9fe5a8", fontWeight: 600 }}>{saveSuccess}</span>
+          )}
         </div>
       </form>
 
